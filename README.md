@@ -3,19 +3,12 @@
 Stress has become a pervasive issue in modern society, affecting both physical and mental health. Traditional stress management approaches rely on subjective self-assessment, making early detection and intervention challenging. There is a need for an objective, data-driven system that can predict stress levels based on physiological indicators.
 
 CalmCast is a full-stack web application that leverages machine learning to forecast individual stress levels using biometric data (heart rate, sleep duration, and physical activity). The system provides personalized stress predictions with confidence scores, enabling proactive stress management through data-driven insights.
-
-## Required Applications:
-- Visual Studio Code
-- MAMP
   
 ## Authors
 - Tina Abdalla
 - Seth McKnight
 - Oluwaseun Osho
-
-## Introduction
-
-Stress is a major factor affecting mental and physical health. The CalmCast Stress Forecaster leverages physiological and behavioral data to estimate and visualize stress levels. The application supports both single-user monitoring and demo scenarios to illustrate stress level variations.
+  
 
 ## System Overview
 
@@ -52,6 +45,10 @@ MySQL 8.0+ database server (MAMP/XAMPP recommended)
 Web browser with JavaScript enabled
 
 Git (optional, for version control)
+
+## Required Applications:
+- Visual Studio Code
+- MAMP
 
 ## HOW TO RUN
 Step 1: Download and Extract Project
