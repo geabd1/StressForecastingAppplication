@@ -1,6 +1,8 @@
 # CALMCAST: THE STRESS DETECTOR
 
-CalmCast is a web-based application designed to forecast user stress levels based on physiological signals such as heart rate and behavioral inputs. The application provides users with real-time stress predictions, actionable insights, and visualizations to manage stress effectively.
+Stress has become a pervasive issue in modern society, affecting both physical and mental health. Traditional stress management approaches rely on subjective self-assessment, making early detection and intervention challenging. There is a need for an objective, data-driven system that can predict stress levels based on physiological indicators.
+
+CalmCast is a full-stack web application that leverages machine learning to forecast individual stress levels using biometric data (heart rate, sleep duration, and physical activity). The system provides personalized stress predictions with confidence scores, enabling proactive stress management through data-driven insights.
 
 ## Required Applications:
 - Visual Studio Code
