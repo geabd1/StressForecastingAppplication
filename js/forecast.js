@@ -648,24 +648,27 @@ function generateForecast(fitbitData, user, mlPrediction) {
     // Use ML prediction if available, otherwise calculate locally
     let stressLevel, stressDescription, stressColor, stressScore, confidence;
     
-    if (mlPrediction && mlPrediction.status === 'success') {
+    
+if (mlPrediction && mlPrediction.status === 'success') {
     stressLevel = mlPrediction.prediction;
-
-    // Use fallback numeric calculation for full 1–10 scale
-    const numericScore = calculateStressScore(fitbitData, avgMood, weeklyMoodData);
-
-    // Adjust numericScore to match ML category
-    if (stressLevel === 'High' && numericScore < 6) {
-        stressScore = 6; // minimum for High
-    } else if (stressLevel === 'Low' && numericScore > 5) {
-        stressScore = 5; // maximum for Low
-    } else {
-        stressScore = numericScore; // otherwise keep numeric value
-    }
-
+    
+    // Calculate the actual numeric score
+    stressScore = calculateStressScore(fitbitData, avgMood, weeklyMoodData);
+    
     confidence = mlPrediction.confidence || 0.8;
-    stressDescription = getMLStressDescription(stressLevel, confidence, mlPrediction.method);
-    stressColor = stressLevel === 'High' ? 'mood-low' : 'mood-high';
+    
+    // Pass the numeric score to the description function
+    stressDescription = getMLStressDescription(stressLevel, confidence, mlPrediction.method, stressScore);
+    
+    // Set color based on the numeric score
+    stressColor = stressScore >= 7 ? 'mood-low' : 'mood-high';
+} else {
+    // Fallback calculation
+    stressScore = calculateStressScore(fitbitData, avgMood, weeklyMoodData);
+    stressLevel = stressScore >= 7 ? 'High' : stressScore >= 4 ? 'Moderate' : 'Low';
+    stressDescription = getFallbackStressDescription(stressLevel, stressScore);
+    stressColor = stressScore >= 7 ? 'mood-low' : stressScore >= 4 ? 'mood-medium' : 'mood-high';
+    confidence = 0.7;
 }
 
     
@@ -686,10 +689,21 @@ function generateForecast(fitbitData, user, mlPrediction) {
     };
 }
 
-function getMLStressDescription(stressLevel, confidence, method) {
-    const methodText = method === 'ml_model' ? 'AI analysis' : 'system analysis';
+function getMLStressDescription(stressLevel, confidence, method, numericScore) {
+    const methodText = method === 'ml_model' ? 'ML analysis' : 'system analysis';
     const confidenceText = confidence >= 0.8 ? 'high confidence' : confidence >= 0.6 ? 'moderate confidence' : 'preliminary assessment';
     
+    // If ML says "Low" but numeric score is high (>=7), use the numeric score
+    if (stressLevel === 'Low' && numericScore >= 7) {
+        return `Our ML analysis suggests low stress, but your health metrics (score: ${numericScore}/10) indicate elevated stress. Consider monitoring your stress levels.`;
+    }
+    
+    // If ML says "High" but numeric score is low (<7), use the numeric score
+    if (stressLevel === 'High' && numericScore < 7) {
+        return `Our ML analysis suggests high stress, but your health metrics (score: ${numericScore}/10) indicate good stress management.`;
+    }
+    
+    // Normal case - ML and numeric score agree
     if (stressLevel === 'High') {
         return `Our ${methodText} indicates elevated stress levels with ${confidenceText}. Consider taking proactive steps to manage stress.`;
     } else {
@@ -699,11 +713,9 @@ function getMLStressDescription(stressLevel, confidence, method) {
 
 function getFallbackStressDescription(stressLevel, stressScore) {
     if (stressLevel === 'High') {
-        return 'You may be experiencing significant stress. Consider taking proactive steps to manage it.';
-    } else if (stressLevel === 'Moderate') {
-        return 'You\'re managing well, but there might be some underlying stress factors.';
+        return `Stress score ${stressScore}/10 indicates elevated stress. Consider relaxation techniques.`;
     } else {
-        return 'Great job maintaining low stress levels! Keep up your healthy habits.';
+        return `Stress score ${stressScore}/10 shows good stress management. Keep up the healthy habits!`;
     }
 }
 
@@ -751,7 +763,7 @@ function generateDailyInsights(fitbitData, avgMood, mlPrediction) {
     
     // Add ML prediction insight if available
     if (mlPrediction && mlPrediction.method === 'ml_model') {
-        insights.push(`AI analysis predicts ${mlPrediction.prediction.toLowerCase()} stress with ${Math.round((mlPrediction.confidence || 0.8) * 100)}% confidence.`);
+        insights.push(`ML analysis predicts ${mlPrediction.prediction.toLowerCase()} stress with ${Math.round((mlPrediction.confidence || 0.8) * 100)}% confidence.`);
     }
     
     // Add manual data indicator
