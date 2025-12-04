@@ -336,7 +336,112 @@ async def fitbit_callback(
         
         return HTMLResponse(content=html_content)
 
+@router.get("/fitbit/historical/{date}")
+async def get_historical_data(
+    date: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Get historical data for a specific date (for demo users)
+    """
+    try:
+        # Parse date
+        target_date = datetime.strptime(date, "%Y-%m-%d").date()
+        
+        # Get data for this date
+        fitbit_data = db.query(FitbitData).filter(
+            FitbitData.user_id == current_user.id,
+            FitbitData.data_date == target_date
+        ).first()
+        
+        if fitbit_data:
+            return {
+                "status": "success",
+                "data": {
+                    "sleep_hours": float(fitbit_data.sleep_hours) if fitbit_data.sleep_hours else 0,
+                    "steps": fitbit_data.steps,
+                    "heart_rate": fitbit_data.heart_rate,
+                    "calories_burned": fitbit_data.calories_burned if fitbit_data.calories_burned else 0,
+                    "data_date": fitbit_data.data_date.isoformat(),
+                    "source": "historical_database"
+                }
+            }
+        else:
+            # Return default based on user ID (for demo)
+            return get_demo_data_for_user(current_user.id, target_date)
+            
+    except Exception as e:
+        print(f"❌ Error getting historical data: {e}")
+        return get_demo_data_for_user(current_user.id, datetime.now().date())
 
+def get_demo_data_for_user(user_id: int, date: date):
+    """Return demo data based on user ID pattern"""
+    # User 18: High stress
+    if user_id == 18:
+        return {
+            "status": "success",
+            "data": {
+                "sleep_hours": 4.5,
+                "steps": 3200,
+                "heart_rate": 95,
+                "calories_burned": 1650,
+                "data_date": date.isoformat(),
+                "source": "demo_high_stress"
+            }
+        }
+    # User 19: Low stress
+    elif user_id == 19:
+        return {
+            "status": "success",
+            "data": {
+                "sleep_hours": 8.2,
+                "steps": 11200,
+                "heart_rate": 65,
+                "calories_burned": 2100,
+                "data_date": date.isoformat(),
+                "source": "demo_low_stress"
+            }
+        }
+    # User 20: Variable
+    elif user_id == 20:
+        return {
+            "status": "success",
+            "data": {
+                "sleep_hours": 6.5,
+                "steps": 5800,
+                "heart_rate": 78,
+                "calories_burned": 1850,
+                "data_date": date.isoformat(),
+                "source": "demo_variable"
+            }
+        }
+    # User 21: Recovery
+    elif user_id == 21:
+        return {
+            "status": "success",
+            "data": {
+                "sleep_hours": 7.8,
+                "steps": 8200,
+                "heart_rate": 72,
+                "calories_burned": 2050,
+                "data_date": date.isoformat(),
+                "source": "demo_recovery"
+            }
+        }
+    else:
+        # Default
+        return {
+            "status": "success",
+            "data": {
+                "sleep_hours": 7.0,
+                "steps": 7500,
+                "heart_rate": 75,
+                "calories_burned": 1900,
+                "data_date": date.isoformat(),
+                "source": "demo_default"
+            }
+        }
 @router.get("/fitbit/data")
 async def get_fitbit_data(
     current_user: User = Depends(get_current_user),
