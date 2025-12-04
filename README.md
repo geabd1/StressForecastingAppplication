@@ -1,4 +1,4 @@
-# CALMCAST: THE STRESS DETECTOR
+# CALMCAST: THE STRESS Forecaster
 
 Stress has become a pervasive issue in modern society, affecting both physical and mental health. Traditional stress management approaches rely on subjective self-assessment, making early detection and intervention challenging. There is a need for an objective, data-driven system that can predict stress levels based on physiological indicators.
 
