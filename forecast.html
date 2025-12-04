@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Forecast - CalmCast</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Your existing forecast styles remain the same */
+        .forecast-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .welcome-section {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .report-section {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .report-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .report-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+        }
+
+        .daily-icon {
+            background: linear-gradient(135deg, #ff7e5f, #ff9a8b);
+        }
+
+        .weekly-icon {
+            background: linear-gradient(135deg, #4a6fa5, #6b8cbc);
+        }
+
+        .data-icon {
+            background: linear-gradient(135deg, #4caf50, #66bb6a);
+        }
+
+        .heart-icon {
+            background: linear-gradient(135deg, #e91e63, #f48fb1);
+        }
+
+        .tips-list {
+            list-style: none;
+            margin: 1.5rem 0;
+        }
+
+        .tips-list li {
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #f0f0f0;
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .tips-list li:before {
+            content: "💡";
+            position: absolute;
+            left: 0;
+            font-size: 1.1rem;
+        }
+
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .data-card {
+            background: var(--light-color);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--primary-color);
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .data-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .data-card.good {
+            border-left-color: #4caf50;
+        }
+
+        .data-card.average {
+            border-left-color: #ff9800;
+        }
+
+        .data-card.needs-improvement {
+            border-left-color: #f44336;
+        }
+
+        .data-card.heart-good {
+            border-left-color: #4caf50;
+        }
+
+        .data-card.heart-average {
+            border-left-color: #ff9800;
+        }
+
+        .data-card.heart-high {
+            border-left-color: #f44336;
+        }
+
+        .data-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--dark-color);
+            margin: 0.5rem 0;
+        }
+
+        .data-subvalue {
+            font-size: 1rem;
+            color: #666;
+            margin-top: 0.25rem;
+        }
+
+        .mood-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .mood-low {
+            background-color: #ffebee;
+            color: #d32f2f;
+        }
+
+        .mood-medium {
+            background-color: #fff3e0;
+            color: #f57c00;
+        }
+
+        .mood-high {
+            background-color: #e8f5e8;
+            color: #388e3c;
+        }
+
+        .heart-rate-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            margin: 0.5rem 0;
+        }
+
+        .heart-normal {
+            background-color: #e8f5e8;
+            color: #388e3c;
+        }
+
+        .heart-elevated {
+            background-color: #fff3e0;
+            color: #f57c00;
+        }
+
+        .heart-high {
+            background-color: #ffebee;
+            color: #d32f2f;
+        }
+
+        .stress-factor {
+            display: inline-block;
+            background-color: #e3f2fd;
+            color: #1976d2;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            margin: 0.5rem 0.5rem 0.5rem 0;
+        }
+
+        .refresh-section {
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        /* Heart rate specific styles */
+        .heart-rate-display {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .heart-beat {
+            font-size: 1.5rem;
+            animation: beat 1s infinite;
+        }
+
+        @keyframes beat {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .heart-rate-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #e91e63;
+        }
+
+        .heart-rate-status {
+            font-size: 1rem;
+            color: #666;
+        }
+
+        /* Edit button styles */
+        .edit-data-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .edit-data-btn:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+            color: var(--primary-color);
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 0;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 500px;
+            box-shadow: var(--box-shadow);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modal-footer {
+            padding: 1.5rem;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+
+        .close-button {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+
+        .close-button:hover {
+            color: #000;
+            background-color: #f5f5f5;
+            border-radius: 50%;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(74, 111, 165, 0.2);
+        }
+
+        .input-with-unit {
+            position: relative;
+        }
+
+        .input-with-unit input {
+            padding-right: 3rem;
+        }
+
+        .input-unit {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .data-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .report-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.5rem;
+            }
+
+            .heart-rate-display {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .modal-content {
+                margin: 5% auto;
+                width: 95%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <span class="logo-icon">🌿</span>
+                <span>CalmCast</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="home.html">Home</a></li>
+                    <li><a href="forecast.html" class="active">My Forecast</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="profile.html">Profile</a></li>
+                    <li><a href="javascript:void(0)" id="sign-out-btn" 
+       onclick="if(confirm('Sign out?')){localStorage.removeItem('calmcast_token');localStorage.removeItem('calmcast_user');window.location.href='index.html'}">
+    Sign Out
+</a></li>        
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="forecast-container">
+                <!-- Welcome Section -->
+                <div class="welcome-section">
+                    <h1>My Forecast</h1>
+                    <p class="description" id="welcome-message">Loading your forecast...</p>
+                </div>
+
+                <!-- Weekly Report -->
+                <div class="report-section">
+                    <div class="report-header">
+                        <div class="report-icon weekly-icon">W</div>
+                        <h2>Weekly Mood Report</h2>
+                    </div>
+                    <div id="weekly-content">
+                        <div class="mood-indicator" id="weekly-mood">
+                            Loading...
+                        </div>
+                        <p id="weekly-description">
+                            Analyzing your weekly patterns...
+                        </p>
+                        <ul class="tips-list" id="weekly-tips">
+                            <li>Loading weekly recommendations...</li>
+                        </ul>
+                        <div id="weekly-factors">
+                            <strong>Common Stress Patterns:</strong>
+                            <span class="stress-factor">Analyzing...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Daily Report -->
+                <div class="report-section">
+                    <div class="report-header">
+                        <div class="report-icon daily-icon">D</div>
+                        <h2>Daily Report</h2>
+                    </div>
+                    <div id="daily-content">
+                        <div class="mood-indicator" id="daily-mood">
+                            Loading...
+                        </div>
+                        <p id="daily-description">
+                            Analyzing your data...
+                        </p>
+                        <ul class="tips-list" id="daily-tips">
+                            <li>Loading personalized tips...</li>
+                        </ul>
+                        <div id="daily-factors">
+                            <strong>Primary Stress Factors:</strong>
+                            <span class="stress-factor">Analyzing...</span>
+                        </div>
+                    </div>
+                </div>
+
+                
+
+                <!-- Your Data Section -->
+                <div class="report-section">
+                    <div class="report-header">
+                        <div class="report-icon data-icon">Y</div>
+                        <h2>Your Data</h2>
+                    </div>
+                    <div class="data-grid" id="data-grid">
+                        <div class="data-card">
+                            <button class="edit-data-btn" title="Edit Sleep Data">✏️</button>
+                            <h4>Sleep Quality</h4>
+                            <div class="data-value" id="sleep-hours">-- hrs/night</div>
+                            <p class="data-description" id="sleep-description">
+                                Loading sleep data...
+                            </p>
+                        </div>
+                        <div class="data-card">
+                            <button class="edit-data-btn" title="Edit Activity Data">✏️</button>
+                            <h4>Activity Level</h4>
+                            <div class="data-value" id="exercise-frequency">-- steps/day</div>
+                            <p class="data-description" id="exercise-description">
+                                Loading activity data...
+                            </p>
+                        </div>
+                        <div class="data-card">
+                            <button class="edit-data-btn" title="Edit Heart Rate Data">✏️</button>
+                            <h4>Heart Health</h4>
+                            <div class="data-value" id="heart-rate-bpm">-- bpm</div>
+                            <div class="data-subvalue" id="heart-rate-status-card">Resting heart rate</div>
+                            <p class="data-description" id="heart-rate-description-card">
+                                Analyzing heart rate...
+                            </p>
+                        </div>
+                        <div class="data-card">
+                            <h4>Stress Level</h4>
+                            <div class="data-value" id="stress-score">--/10</div>
+                            <p class="data-description" id="stress-description">
+                                Analyzing stress patterns...
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Refresh Section -->
+                <div class="refresh-section">
+                    <button class="cta-button secondary-button" id="refresh-forecast">
+                        🔄 Refresh Forecast
+                    </button>
+                    <p class="description" style="margin-top: 0.5rem; font-size: 0.9rem;">
+                        Last updated: <span id="last-updated">Never</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Edit Data Modal -->
+    <div id="edit-data-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="edit-modal-title">Edit Health Data</h3>
+                <button class="close-button" id="close-edit-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="edit-data-form">
+                    <div class="form-group">
+                        <label for="edit-sleep-hours">Sleep Duration (hours)</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="edit-sleep-hours" min="0" max="24" step="0.1" placeholder="7.5">
+                            <span class="input-unit">hours</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-steps">Daily Steps</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="edit-steps" min="0" max="50000" step="1" placeholder="8000">
+                            <span class="input-unit">steps</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-heart-rate">Resting Heart Rate</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="edit-heart-rate" min="40" max="120" step="1" placeholder="65">
+                            <span class="input-unit">bpm</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-notes">Notes (Optional)</label>
+                        <textarea id="edit-notes" rows="3" placeholder="Any additional context about this data..." style="width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: var(--border-radius); font-family: inherit;"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="cta-button secondary-button" id="cancel-edit">Cancel</button>
+                <button class="cta-button" id="save-edited-data">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 CalmCast. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/userData.js"></script>
+    <script src="js/script.js"></script>
+    <script src="js/forecast.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - CalmCast</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <span class="logo-icon">🌿</span>
+                <span>CalmCast</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="home.html">Home</a></li>
+                    <li><a href="forecast.html">My Forecast</a></li>
+                    <li><a href="about.html" class="active">About</a></li>
+                    <li><a href="profile.html">Profile</a></li>
+                    <li><a href="javascript:void(0)" id="sign-out-btn" 
+       onclick="if(confirm('Sign out?')){localStorage.removeItem('calmcast_token');localStorage.removeItem('calmcast_user');window.location.href='index.html'}">
+    Sign Out
+</a></li>              </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="page-header">
+                <h2>About Us</h2>
+            </div>
+            
+            <div class="about-content">
+                <p>CalmCast was created by three Computer Science students at Morgan State University with a mission 
+                to make stress easier to understand and manage. The app helps users detect their stress levels,
+                visualize patterns like a "forecast," and discover personalized ways to reduce tension. 
+                Our goal is to combine technology and wellness to promote healthier, calmer lifestyles.</p>
+                
+                <p>By turning stress into something trackable and predictable, CalmCast empowers users to take control of their mental well-being. 
+                Whether it's through guided coping strategies, daily insights, or simply recognizing stress triggers, the app is designed to be both supportive and
+                practical. We believe that understanding your "stress forecast" is the first step toward building resilience and balance in everyday life.</p>
+                
+                <p class="signature">— The CalmCast Team</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 CalmCast. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/userData.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>

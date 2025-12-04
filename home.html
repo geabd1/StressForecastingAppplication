@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - CalmCast</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <span class="logo-icon">🌿</span>
+                <span>CalmCast</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="home.html" class="active">Home</a></li>
+                    <li><a href="forecast.html">My Forecast</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="profile.html">Profile</a></li>
+                    <li><a href="javascript:void(0)" id="sign-out-btn" 
+       onclick="if(confirm('Sign out?')){localStorage.removeItem('calmcast_token');localStorage.removeItem('calmcast_user');window.location.href='index.html'}">
+    Sign Out
+</a></li>        
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="welcome-section">
+                <h2 id="welcome-message">Hello!</h2> <!-- Will be updated by JavaScript -->
+                <div class="check-in-card">
+                    <h3>Daily Check In</h3>
+                    <p>How would you rate your mood today (1 - 10)?</p>
+
+                    <div class="mood-rating">
+                        <div class="rating-scale">
+                            <div class="rating-bar" data-rating="1">
+                                <div class="bar-fill" style="height: 10%"></div>
+                                <span class="bar-label">1 - Very Rough</span>
+                            </div>
+                            <div class="rating-bar" data-rating="2">
+                                <div class="bar-fill" style="height: 20%"></div>
+                                <span class="bar-label">2 - Rough</span>
+                            </div>
+                            <div class="rating-bar" data-rating="3">
+                                <div class="bar-fill" style="height: 30%"></div>
+                                <span class="bar-label">3 - Difficult</span>
+                            </div>
+                            <div class="rating-bar" data-rating="4">
+                                <div class="bar-fill" style="height: 40%"></div>
+                                <span class="bar-label">4 - Challenging</span>
+                            </div>
+                            <div class="rating-bar" data-rating="5">
+                                <div class="bar-fill" style="height: 50%"></div>
+                                <span class="bar-label">5 - Neutral</span>
+                            </div>
+                            <div class="rating-bar" data-rating="6">
+                                <div class="bar-fill" style="height: 60%"></div>
+                                <span class="bar-label">6 - Okay</span>
+                            </div>
+                            <div class="rating-bar" data-rating="7">
+                                <div class="bar-fill" style="height: 70%"></div>
+                                <span class="bar-label">7 - Good</span>
+                            </div>
+                            <div class="rating-bar" data-rating="8">
+                                <div class="bar-fill" style="height: 80%"></div>
+                                <span class="bar-label">8 - Very Good</span>
+                            </div>
+                            <div class="rating-bar" data-rating="9">
+                                <div class="bar-fill" style="height: 90%"></div>
+                                <span class="bar-label">9 - Great</span>
+                            </div>
+                            <div class="rating-bar" data-rating="10">
+                                <div class="bar-fill" style="height: 100%"></div>
+                                <span class="bar-label">10 - Excellent</span>
+                            </div>
+                        </div>
+                        <div class="selected-rating">
+                            <p><strong>Current Selection:</strong> <span id="current-rating">Please select a
+                                    rating</span></p>
+                        </div>
+                        <button class="cta-button" id="check-in-btn">Check In</button>
+                    </div>
+                </div>
+
+                <div class="last-week-review">
+                    <h3>Your Weekly Overview</h3>
+                    <p id="weekly-summary">Start tracking your mood to see insights here!</p>
+                    <div class="rating-summary">
+                        <div class="rating-item">
+                            <span class="rating-label">Average Mood</span>
+                            <div class="rating-bar-small">
+                                <div class="bar-fill" style="width: 50%"></div>
+                            </div>
+                            <span class="rating-value" id="avg-mood">-/-</span>
+                        </div>
+                        <div class="check-in-count">
+                            <span class="count-label">Check Ins This Week</span>
+                            <span class="count-value" id="checkin-count">0 days</span>
+                        </div>
+                    </div>
+                    <canvas id="moodChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 CalmCast. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/userData.js"></script>
+    <script src="js/script.js"></script>
+    <script src="js/home.js"></script>
+</body>
+
+</html>

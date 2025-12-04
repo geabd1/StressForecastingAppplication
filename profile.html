@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - CalmCast</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Your existing profile styles remain the same */
+        .profile-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .profile-header {
+            grid-column: 1 / -1;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .profile-section {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 2rem;
+        }
+
+        .settings-section {
+            grid-column: 1;
+        }
+
+        .activity-section {
+            grid-column: 2;
+        }
+
+        .setting-item {
+            padding: 1.5rem;
+            border: 1px solid #e0e0e0;
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
+            transition: var(--transition);
+        }
+
+        .setting-item:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .setting-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .setting-title {
+            font-weight: 600;
+            color: var(--dark-color);
+            font-size: 1.1rem;
+        }
+
+        .setting-description {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .fitbit-connected {
+            background-color: #e8f5e8;
+            border-color: #4caf50;
+        }
+
+        .danger-zone {
+            border-color: var(--accent-color);
+            background-color: #fff5f5;
+        }
+
+        .danger-button {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .danger-button:hover {
+            background-color: #e55a4a;
+        }
+
+        .activity-list {
+            list-style: none;
+        }
+
+        .activity-item {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-time {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-connected {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .status-disconnected {
+            background-color: #ff9800;
+            color: white;
+        }
+
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 0 auto 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .profile-container {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .settings-section,
+            .activity-section {
+                grid-column: 1;
+            }
+
+            .setting-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 0;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 500px;
+            box-shadow: var(--box-shadow);
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modal-footer {
+            padding: 1.5rem;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+
+        .close-button {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .close-button {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+
+        .close-button:hover {
+            color: #000;
+            background-color: #f5f5f5;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <span class="logo-icon">🌿</span>
+                <span>CalmCast</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="home.html">Home</a></li>
+                    <li><a href="forecast.html">My Forecast</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="profile.html" class="active">Profile</a></li>
+                    <li><a href="javascript:void(0)" id="sign-out-btn" 
+       onclick="if(confirm('Sign out?')){localStorage.removeItem('calmcast_token');localStorage.removeItem('calmcast_user');window.location.href='index.html'}">
+    Sign Out
+</a></li>                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="profile-container">
+                <!-- Profile Header -->
+                <div class="profile-header">
+                    <div class="user-avatar" id="user-avatar">U</div> <!-- Will be updated by JavaScript -->
+                    <h2 id="profile-name">Profile</h2> <!-- Will be updated by JavaScript -->
+                    <p class="description">Manage your account settings and preferences</p>
+                </div>
+
+                <!-- Settings Section -->
+                <div class="profile-section settings-section">
+                    <h3>Account Settings</h3>
+
+                    <!-- Fitbit Connection -->
+                    <div class="setting-item" id="fitbit-setting">
+                        <div class="setting-header">
+                            <span class="setting-title">Connect to FitBit</span>
+                            <span class="status-badge status-disconnected" id="fitbit-status">Not Connected</span>
+                        </div>
+                        <p class="setting-description">Get more accurate data when connected</p>
+                        <button class="cta-button" id="connect-fitbit-btn">
+                            Connect Fitbit
+                        </button>
+                    </div>
+
+                    <!-- User Settings -->
+                    <div class="setting-item">
+                        <div class="setting-header">
+                            <span class="setting-title">User Settings</span>
+                        </div>
+                        <p class="setting-description">Change username, password, email</p>
+                        <div class="setting-actions">
+                            <button class="cta-button secondary-button" id="edit-settings-btn">
+                                Edit Settings
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Delete Account -->
+                    <div class="setting-item danger-zone">
+                        <div class="setting-header">
+                            <span class="setting-title">Delete Account</span>
+                        </div>
+                        <p class="setting-description">Erase your information and deactivate</p>
+                        <button class="danger-button" id="delete-account-btn">
+                            Delete Account
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Recent Activity Section -->
+                <div class="profile-section activity-section">
+                    <h3>Recent Activity</h3>
+                    <ul class="activity-list" id="recent-activity">
+                        <li class="activity-item">
+                            <div class="activity-content">
+                                <strong>Welcome to CalmCast!</strong>
+                                <p>Start tracking your mood to see activity here</p>
+                            </div>
+                            <span class="activity-time">Just now</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit User Settings</h3>
+                <button class="close-button" id="close-settings-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="settings-form">
+                    <div class="form-group">
+                        <label for="settings-username">Username</label>
+                        <input type="text" id="settings-username" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="settings-email">Email</label>
+                        <input type="email" id="settings-email" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="current-password">Current Password</label>
+                        <input type="password" id="current-password">
+                    </div>
+                    <div class="form-group">
+                        <label for="new-password">New Password</label>
+                        <input type="password" id="new-password">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm-password">Confirm New Password</label>
+                        <input type="password" id="confirm-password">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="cta-button secondary-button" id="cancel-settings">Cancel</button>
+                <button class="cta-button" id="save-settings">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Account Modal -->
+    <div id="delete-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Delete Account</h3>
+                <button class="close-button" id="close-delete-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete your account? This action cannot be undone.</p>
+                <p><strong>All your data will be permanently erased, including:</strong></p>
+                <ul>
+                    <li>Mood check-in history</li>
+                    <li>Stress forecasts</li>
+                    <li>Fitbit connection data</li>
+                    <li>Personal preferences</li>
+                </ul>
+                <div class="form-group">
+                    <label for="confirm-delete">Type "DELETE" to confirm:</label>
+                    <input type="text" id="confirm-delete" placeholder="DELETE">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="cta-button secondary-button" id="cancel-delete">Cancel</button>
+                <button class="danger-button" id="confirm-delete-btn" disabled>
+                    Delete Account Permanently
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 CalmCast. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/userData.js"></script>
+    <script src="js/script.js"></script>
+    <script src="js/profile.js"></script>
+</body>
+
+</html>
